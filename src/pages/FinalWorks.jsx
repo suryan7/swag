@@ -147,9 +147,13 @@ export default function FinalWorks() {
                                 </div>
 
                                     <div className="p-6 border-t-2 border-pop-gray bg-white flex-shrink-0">
-                                <h3 className="text-xl font-bold">{metadata[selected.name]?.title || selected.name}</h3>
-                                <p className="text-pop-black/70 mt-2">{metadata[selected.name]?.caption || 'Short description goes here (edit later).'}</p>
-                                </div>
+                                        <h3 className="text-xl font-bold">
+                                            {metadata[selected.name]?.title || (textPattern.test(selected.name) ? metadata["Copy of Text 1.jpg"]?.title : selected.name)}
+                                        </h3>
+                                        <p className="text-pop-black/70 mt-2">
+                                            {metadata[selected.name]?.caption || (textPattern.test(selected.name) ? metadata["Copy of Text 1.jpg"]?.caption : 'Short description goes here (edit later).')}
+                                        </p>
+                                    </div>
                         </div>
                     </div>
                 )}
