@@ -1,13 +1,17 @@
 import React from 'react';
 import GalleryHeader from '../components/GalleryHeader';
 
-// Load images from assets/finalartwork using Vite's import.meta.glob
-const modules = import.meta.glob('../assets/finalartwork/*.{png,jpg,jpeg,svg}', { eager: true });
+// Load images from both the original and new final-art collections.
+const modules = {
+  ...import.meta.glob('../assets/finalartwork/*.{png,jpg,jpeg,svg}', { eager: true }),
+  ...import.meta.glob('../assets/artf/*.{png,jpg,jpeg,svg}', { eager: true })
+};
 
 import metadata from '../data/finalworks.json';
 
 const orderList = [
   "Copy of Knight.jpg",               // Fallen Knight
+  "4.jpg",                            // Witch's Brew
   "Spidey.jpg",                        // Rooftop Romance
   "Copy of Text 1.jpg",                // The Red Thread Theory
   "Copy of Text 2.jpg",
@@ -15,8 +19,13 @@ const orderList = [
   "Copy of Text 4.jpg",
   "Copy of Text 5.jpg",
   "Copy of Text 6.jpg",
+  "5.jpg",                            // Alina
+  "6.jpg",                            // Sunflower Garden
   "Copy of The Girl copy.jpg",         // Train Journey — Animation Clip
   "Copy of BG copy.jpg",               // Mountain Landscape
+  "2.jpg",                            // Little Krishna
+  "3.jpg",
+  "1.jpg",                            // Mahalaya
   "Copy of Untitled-1 copy (1).jpg",   // Warrior Character Design
   "Copy of Untitled-3 copy 1.jpg",     // Sunset by the River
   "Copy of Coffee Date copy.jpg",      // Coffee Date
@@ -27,7 +36,8 @@ const orderList = [
 
 const rawItems = Object.keys(modules).map((key) => ({
   src: modules[key].default || modules[key],
-  name: key.split('/').pop()
+  name: key.split('/').pop(),
+  collection: key.includes('/artf/') ? 'artf' : 'finalartwork'
 }));
 
 const sortedRawItems = rawItems.sort((a, b) => {
@@ -59,13 +69,17 @@ export default function FinalWorks() {
     // Build gallery groups (text series and default all)
     const textPattern = /^Copy of Text/i;
     const textGroup = items.filter(i => textPattern.test(i.name));
+    const artfSeriesPattern = /^[23]\.jpg$/i;
+    const artfSeries = items.filter(i => i.collection === 'artf' && artfSeriesPattern.test(i.name));
     const galleries = {
         text: textGroup,
+        artfSeries,
         all: items
     };
 
     // shown items: show only the first of the text series in the grid
     const firstTextId = textGroup.length ? textGroup[0].id : null;
+    const firstArtfSeriesId = artfSeries.length ? artfSeries[0].id : null;
 
     React.useEffect(() => {
         function onKey(e) {
@@ -106,15 +120,22 @@ export default function FinalWorks() {
 
                 <div className="grid md:grid-cols-3 gap-6">
                     {items
-                        .filter(it => !(textPattern.test(it.name) && it.id !== firstTextId)) // show only the first of the text series
+                        .filter(it => {
+                            const isTextSeriesItem = textPattern.test(it.name) && it.id !== firstTextId;
+                            const isArtfSeriesItem = it.collection === 'artf' && artfSeriesPattern.test(it.name) && it.id !== firstArtfSeriesId;
+                            return !isTextSeriesItem && !isArtfSeriesItem;
+                        })
                         .map(it => (
-                            <figure key={it.id} className="bg-white border-[3px] border-pop-black rounded-2xl overflow-hidden cursor-pointer" onClick={() => open(it, textPattern.test(it.name) ? 'text' : 'all')}>
+                            <figure key={it.id} className="bg-white border-[3px] border-pop-black rounded-2xl overflow-hidden cursor-pointer" onClick={() => open(it, textPattern.test(it.name) ? 'text' : (it.id === firstArtfSeriesId ? 'artfSeries' : 'all'))}>
                                 <img src={it.src} alt={it.name} className="w-full h-64 object-cover" />
                                 <figcaption className="p-4">
                                     <div className="flex items-center justify-between">
                                     <h3 className="text-lg md:text-xl font-bold truncate">{metadata[it.name]?.title || it.name}</h3>
                                         {it.id === firstTextId && textGroup.length > 1 && (
                                             <span className="text-sm font-bold text-pop-black/60">Series · {textGroup.length}p</span>
+                                        )}
+                                        {it.id === firstArtfSeriesId && artfSeries.length > 1 && (
+                                            <span className="text-sm font-bold text-pop-black/60">Series · {artfSeries.length}p</span>
                                         )}
                                     </div>
                                 <p className="text-pop-black/60 text-sm mt-2">{metadata[it.name]?.caption || 'Short description goes here (edit later).'}</p>

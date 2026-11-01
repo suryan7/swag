@@ -4,8 +4,14 @@ import { X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 // load user assets for thumbnails
-const lineModules = import.meta.glob('../assets/line/*.{png,jpg,jpeg,svg}', { eager: true });
-const finalModules = import.meta.glob('../assets/finalartwork/*.{png,jpg,jpeg,svg}', { eager: true });
+const lineModules = {
+    ...import.meta.glob('../assets/line/*.{png,jpg,jpeg,svg}', { eager: true }),
+    ...import.meta.glob('../assets/linea/*.{png,jpg,jpeg,svg}', { eager: true })
+};
+const finalModules = {
+    ...import.meta.glob('../assets/finalartwork/*.{png,jpg,jpeg,svg}', { eager: true }),
+    ...import.meta.glob('../assets/artf/*.{png,jpg,jpeg,svg}', { eager: true })
+};
 const lineImages = Object.keys(lineModules).map(k => lineModules[k].default || lineModules[k]);
 const finalImages = Object.keys(finalModules).map(k => finalModules[k].default || finalModules[k]);
 

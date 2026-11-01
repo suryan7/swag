@@ -1,8 +1,11 @@
 import React from 'react';
 import GalleryHeader from '../components/GalleryHeader';
 
-// Load all images from src/assets/line
-const modules = import.meta.glob('../assets/line/*.{png,jpg,jpeg,svg}', { eager: true });
+// Load images from both the original and new line-art collections.
+const modules = {
+    ...import.meta.glob('../assets/line/*.{png,jpg,jpeg,svg}', { eager: true }),
+    ...import.meta.glob('../assets/linea/*.{png,jpg,jpeg,svg}', { eager: true })
+};
 const items = Object.keys(modules).map((key, i) => ({ id: i + 1, src: modules[key].default || modules[key], name: key.split('/').pop() }));
 
 export default function LineArts() {

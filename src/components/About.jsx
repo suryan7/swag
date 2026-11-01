@@ -46,7 +46,7 @@ export default function About() {
 
                         <div className="grid grid-cols-2 gap-6 pt-4">
                             <div className="bg-white p-6 border-[3px] border-pop-black rounded-2xl shadow-pop hover:-translate-y-1 transition-transform">
-                                <h3 className="text-4xl font-display text-pop-purple">1</h3>
+                                <h3 className="text-4xl font-display text-pop-purple">2</h3>
                                 <p className="font-bold text-sm">YEAR EXP.</p>
                             </div>
                             <div className="bg-white p-6 border-[3px] border-pop-black rounded-2xl shadow-pop hover:-translate-y-1 transition-transform">
